@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -33,39 +37,43 @@ jobs:
         run: vendor/bin/phpunit --configuration phpunit.xml --testdox
 
   build-and-push:
-    # Only build/push on push to main or tags, not PRs
+    # Only build & push on repository pushes (not on PRs)
     if: github.event_name == 'push'
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      packages: write   # for GHCR with GITHUB_TOKEN
-      id-token: write   # for OIDC (optional)
+      contents: write   # needed to create/push the build- tags
+      packages: write   # needed to push to GHCR
+    env:
+      # Lowercased ghcr image name, e.g. ghcr.io/owner/repo
+      IMAGE_NAME: ghcr.io/${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Force image name to lowercase (GHCR requirement)
+        run: echo "IMAGE_NAME=${IMAGE_NAME,,}" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Login (GHCR with GITHUB_TOKEN)
       - name: Log in to GHCR
-        if: env.REGISTRY == 'ghcr.io'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          REGISTRY: ghcr.io
 
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}
+          images: ${{ env.IMAGE_NAME }}
           tags: |
+            # Push :latest on pushes to main
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/heads/main') }}
+            # Push :vX.Y.Z when the ref is a tag like v1.2.3
             type=semver,pattern={{version}}
+            # Always add a SHA tag for traceability
             type=sha,format=short
 
       - name: Build & push
@@ -76,10 +84,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
 
-      - name: Tag commit
+      - name: Tag commit with build number (only on main branch)
         if: github.ref == 'refs/heads/main'
         env:
           TAG: build-${{ github.run_number }}

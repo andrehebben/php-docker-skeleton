@@ -37,20 +37,20 @@ jobs:
         run: vendor/bin/phpunit --configuration phpunit.xml --testdox
 
   build-and-push:
-    # Only build & push on repository pushes (not on PRs)
+    # Only build & push on repo pushes (not PRs)
     if: github.event_name == 'push'
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # needed to create/push the build- tags
+      contents: write   # needed to create/push the build-* tag
       packages: write   # needed to push to GHCR
     env:
-      # Lowercased ghcr image name, e.g. ghcr.io/owner/repo
+      # Start with canonical image name and force lowercase (GHCR requirement)
       IMAGE_NAME: ghcr.io/${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Force image name to lowercase (GHCR requirement)
+      - name: Force image name to lowercase
         run: echo "IMAGE_NAME=${IMAGE_NAME,,}" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx

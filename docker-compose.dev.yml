@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    environment:
+      XDEBUG_MODE: debug
+      XDEBUG_CLIENT_HOST: host.docker.internal
+      XDEBUG_CLIENT_PORT: 9003
+    ports:
+      - "8080:8080"
+      - "9003:9003"

@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # Keep GitHub Actions up to date
+  - package-ecosystem: "github-actions"
+    directory: "/" # location of workflow files
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # Keep Composer dependencies up to date
+  - package-ecosystem: "composer"
+    directory: "/" # location of composer.json
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Optional: only allow patch/minor upgrades automatically
+    # allow:
+    #   - dependency-type: "direct"
+    # versioning-strategy: increase-if-necessary

@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    image: ghcr.io/andrehebben/your-app:dev
+    volumes:
+      - .:/app
+    command: php -S 0.0.0.0:8080 -t public
+    ports:
+      - "8080:8080"

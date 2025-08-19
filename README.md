@@ -33,6 +33,24 @@ building a new application with good defaults.
    composer fix    # PHP-CS-Fixer
    ```
 
+## Configuration
+
+Configuration values can be supplied via environment variables or a `.env` file.
+For local development, copy [`conf/.env.example`](conf/.env.example) to `conf/.env`
+and adjust values as needed. The `docker-compose.yml` mounts the `conf/`
+directory into the container at `/conf`, and the application will load variables
+from `/conf/.env` if present. Environment variables already defined will take
+precedence over values from the file.
+
+Load the configuration at the beginning of your application:
+
+```php
+use App\Config;
+
+Config::load();
+$appName = Config::get('APP_NAME', 'My App');
+```
+
 ## Configuration for your project
 
 - **Composer package name**: update the `name` field in [`composer.json`](./composer.json) from `andrehebben/your-app` to your own package identifier.

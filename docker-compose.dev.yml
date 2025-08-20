@@ -1,6 +1,10 @@
 # You can leave version: "3.9" in, but Compose v2 ignores it.
 services:
   app:
+    environment:
+      XDEBUG_MODE: debug,develop,coverage   # ← add coverage
+      XDEBUG_CLIENT_HOST: host.docker.internal
+      XDEBUG_CLIENT_PORT: 9003
     image: ghcr.io/andrehebben/php-docker-skeleton:dev   # <— stays for deployment
     command: php -S 0.0.0.0:8080 -t public
     ports:

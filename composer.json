@@ -18,5 +18,8 @@
     "lint": "phpcs --standard=PSR12 src",
     "stan": "phpstan analyse src --memory-limit=1G",
     "fix": "php-cs-fixer fix --allow-risky=yes"
-  }
+  },
+  "autoload": { "psr-4": { "App\\": "src/" } },
+  "autoload-dev": { "psr-4": { "App\\Tests\\": "tests/" } }
 }
+

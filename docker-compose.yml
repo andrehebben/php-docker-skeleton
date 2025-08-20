@@ -1,11 +1,19 @@
-version: "3.9"
 services:
   app:
-    build: .
-    image: ghcr.io/andrehebben/your-app:dev
-    volumes:
-      - .:/app
-      - ./conf:/conf:ro
-    command: php -S 0.0.0.0:8080 -t public
+    # Build a local image just for dev (tag it differently so Compose never pulls)
+    image: ghcr.io/andrehebben/php-docker-skeleton:dev-local
+    build:
+      context: .
+      # (Optional) pass DEV=true if your Dockerfile installs xdebug conditionally
+      # args:
+      #   DEV: "true"
+
+    # Dev-only extras
+    environment:
+      XDEBUG_MODE: debug,develop
+      XDEBUG_CLIENT_HOST: host.docker.internal
+      XDEBUG_CLIENT_PORT: 9003
     ports:
       - "8080:8080"
+      - "9003:9003"
+    # Volumes are inherited from base; you can re‑declare or add more here if needed.

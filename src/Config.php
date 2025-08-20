@@ -10,7 +10,7 @@ final class Config
 {
     public static function load(string $directory = '/conf'): void
     {
-        $envFile = rtrim($directory, '/').'/'.'.env';
+        $envFile = rtrim($directory, '/') . '/' . '.env';
         if (is_readable($envFile)) {
             Dotenv::createImmutable($directory)->safeLoad();
         }

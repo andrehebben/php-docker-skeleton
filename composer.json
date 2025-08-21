@@ -9,16 +9,38 @@
     "phpunit/phpunit": "^11.0",
     "friendsofphp/php-cs-fixer": "^3.0",
     "phpstan/phpstan": "^1.11",
-    "squizlabs/php_codesniffer": "^3.10"
+    "squizlabs/php_codesniffer": "^3.10",
+    "marcocesarato/php-conventional-changelog": "^1.17"
   },
-  "autoload": { "psr-4": { "App\\": "src/" } },
-  "autoload-dev": { "psr-4": { "App\\Tests\\": "tests/" } },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Tests\\": "tests/"
+    }
+  },
   "scripts": {
     "test": "phpunit --configuration phpunit.xml",
     "lint": "phpcs --standard=PSR12 src",
     "stan": "phpstan analyse src --memory-limit=1G",
-    "fix": "php-cs-fixer fix --allow-risky=yes"
+    "fix": "php-cs-fixer fix --allow-risky=yes",
+    "changelog": "conventional-changelog",
+    "release": "conventional-changelog --commit",
+    "release:patch": "conventional-changelog --patch --commit",
+    "release:minor": "conventional-changelog --minor --commit",
+    "release:major": "conventional-changelog --major --commit"
   },
-  "autoload": { "psr-4": { "App\\": "src/" } },
-  "autoload-dev": { "psr-4": { "App\\Tests\\": "tests/" } }
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Tests\\": "tests/"
+    }
+  }
 }

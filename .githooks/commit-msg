@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+MSG_FILE="$1"
+PATTERN='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9\-\._]+\))?: .+'
+if ! grep -Eq "$PATTERN" "$MSG_FILE"; then
+  echo "⛔ Commit message must follow Conventional Commits, e.g.:"
+  echo "   feat(scope): add X"
+  exit 1
+fi

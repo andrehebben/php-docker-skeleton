@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"App\\Tests\\ConfigTest::testLoadReadsEnvFile":0.004,"App\\Tests\\ConfigTest::testGetReturnsDefaultWhenMissing":0,"App\\Tests\\GreeterTest::testGreetReturnsGreeting":0,"App\\Tests\\IndexTest::testIndexOutputsGreeting":0}}
